@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./data.db"
+}
+
+model users {
+  id           Int      @id @default(autoincrement())
+  cpf          String
+  age          Int
+  gender       Boolean
+  smoker       Boolean
+  hypertension Boolean
+  diabetes     Boolean
+  fat          Boolean
+  psychosocial Boolean
+  healthy      Boolean
+  cholesterol  Boolean
+  activity     Boolean
+  createdAt    DateTime @default(now())
+  result       Float    @default(0)
+}
+
+model doctor {
+  id        Int      @id @default(autoincrement())
+  cpf       String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
