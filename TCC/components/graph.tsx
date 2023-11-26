@@ -48,7 +48,7 @@ export default function Graph({ id }: Props) {
       <span className="text-back font-semibold text-xl">Resultados</span>
       <div className="bg-back text-white w-full h-[80%] ml-5 overflow-y-auto rounded-lg flex flex-col items-center font-semibold py-2 gap-2">
         <div className="flex w-[70%] items-center justify-center">
-          <span className={`font-semibold bg-white rounded-lg text-xl ${textColor}`}>
+          <span className={`font-semibold bg-white px-4 rounded-lg text-xl ${textColor}`}>
             {(current * 100).toFixed(2)}%
           </span>
           <PieChart
