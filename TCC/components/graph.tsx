@@ -8,15 +8,16 @@ interface Props {
   id: number;
 }
 
+interface PieSeries {
+  value: number;
+  label: string;
+  color: string;
+}
+
 export default function Graph({ id }: Props) {
   const [current, setCurrent] = useState<number>(0);
   const [line, setLine] = useState<number[]>([0]);
-  const data = [
-    { id: 0, value: 25, label: "Baixo", color: "green" },
-    { id: 1, value: 25, label: "Moderado", color: "yellow" },
-    { id: 2, value: 25, label: "Alto", color: "orange" },
-    { id: 3, value: 25, label: "Muito alto", color: "red" },
-  ];
+  const [pie, setPie] = useState<PieSeries[]>([]);
 
   const textColor = useMemo(() => {
     switch (true) {
@@ -37,6 +38,7 @@ export default function Graph({ id }: Props) {
       .then(response => {
         setCurrent(response.data.current);
         setLine(response.data.line);
+        setPie(response.data.pie);
       })
       .catch(error => {
         console.error(error);
@@ -82,8 +84,8 @@ export default function Graph({ id }: Props) {
                       return "";
                   }
                 },
-                data,
-                valueFormatter: value => `${value.value}%`,
+                data: pie,
+                valueFormatter: value => `${value.value.toFixed(2)}%`,
                 highlightScope: { faded: "global", highlighted: "item" },
                 faded: { innerRadius: 30, additionalRadius: -30, color: "gray" },
               },
@@ -122,6 +124,7 @@ export default function Graph({ id }: Props) {
           series={[
             {
               data: line,
+              valueFormatter: value => (value ? `${value.toFixed(2)}%` : ""),
               showMark: true,
               color: "white",
             },

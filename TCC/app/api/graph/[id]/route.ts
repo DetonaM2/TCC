@@ -28,5 +28,40 @@ export async function GET(_: any, { params }: Params) {
     return NextResponse.json({ error: "Resultados não encontrados!" }, { status: 404 });
   }
 
-  return NextResponse.json({ current: result.result, line: resultList.map(item => item.result * 100) });
+  const resultAll = await prisma.users.findMany({
+    distinct: ["cpf"],
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (!resultAll) {
+    return NextResponse.json({ error: "Resultados não encontrados!" }, { status: 404 });
+  }
+
+  const green = { value: 0, label: "Baixo", color: "green" };
+  const yellow = { value: 0, label: "Moderado", color: "yellow" };
+  const orange = { value: 0, label: "Alto", color: "orange" };
+  const red = { value: 0, label: "Muito Alto", color: "red" };
+
+  for (const result of resultAll) {
+    switch (true) {
+      case result.result < 0.25:
+        green.value += 100 / resultAll.length;
+        break;
+      case result.result < 0.5:
+        yellow.value += 100 / resultAll.length;
+        break;
+      case result.result < 0.75:
+        orange.value += 100 / resultAll.length;
+        break;
+      default:
+        red.value += 100 / resultAll.length;
+        break;
+    }
+  }
+
+  return NextResponse.json({
+    current: result.result,
+    line: resultList.map(item => item.result * 100),
+    pie: [green, yellow, orange, red],
+  });
 }
